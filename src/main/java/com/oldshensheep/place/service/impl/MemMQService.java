@@ -2,7 +2,6 @@ package com.oldshensheep.place.service.impl;
 
 import com.oldshensheep.place.service.MQService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Consumer;

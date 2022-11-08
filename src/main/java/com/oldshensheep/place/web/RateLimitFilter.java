@@ -26,7 +26,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String remoteAddr = request.getRemoteAddr();
+        String remoteAddr = request.getHeader("X-FORWARDED-FOR");
+        if (remoteAddr == null) {
+            remoteAddr = request.getRemoteAddr();
+        }
         log.debug(remoteAddr);
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
