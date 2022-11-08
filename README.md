@@ -33,7 +33,8 @@ java --enable-preview -jar app.jar
 
 By default, a canvas of 1000x1000 pixels will be initialized
 
-If you want to configure the canvas size, backup rate and other parameters you can use a custom configuration file
+If you want to configure the canvas size, backup rate and other parameters you can use a custom configuration file.
+
 Start with a custom configuration file
 
 ```shell
@@ -55,7 +56,7 @@ not require high performance.
 
 ### Initialize canvas (optional)
 
-The canvas can be initialized manually from an image by visiting http://localhost:8080/init to initialize it from
+The canvas can be initialized manually from an image by HTTP POST http://localhost:8080/init?token=cb2f4c23-5bfb-485c-aa65-e5873f279bab to initialize it from
 the `app.init-image` value in the configuration file.
 value in the configuration file, which defaults to `dd.png`.
 
