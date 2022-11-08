@@ -1,0 +1,64 @@
+plugins {
+    id 'org.springframework.boot' version '3.0.0-RC1'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.graalvm.buildtools.native' version '0.9.17'
+    id 'java'
+}
+
+group = 'com.oldshensheep'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '19'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.hibernate.orm:hibernate-community-dialects'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.xerial:sqlite-jdbc'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('bootBuildImage') {
+    buildpacks = ['gcr.io/paketo-buildpacks/bellsoft-liberica:9.9.0-ea', 'gcr.io/paketo-buildpacks/java-native-image']
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += "--enable-preview"
+}
+
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs += '--enable-preview'
+}
+
+// TODO: graalvm
+//https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#configuration
+graalvmNative {
+    binaries {
+        main {
+            buildArgs.add('--enable-preview')
+        }
+    }
+}

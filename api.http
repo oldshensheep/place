@@ -1,0 +1,18 @@
+### init canvas
+POST http://localhost:8080/init
+
+### put a pixel
+PUT http://localhost:8080/pixels
+Content-Type:  application/json
+
+{
+  "x": 50,
+  "y": 50,
+  "color": [255,0,0,255]
+}
+
+### get all pixels
+GET http://localhost:8080/pixels/all
+
+### sse pixel
+GET http://localhost:8080/time

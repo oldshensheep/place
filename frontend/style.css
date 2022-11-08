@@ -1,0 +1,51 @@
+canvas {
+    user-select: none;
+    image-rendering: pixelated;
+    border: 1px solid black;
+}
+
+.full-view {
+    position: relative;
+    scale: 0.3;
+}
+
+.full-view > canvas {
+    position: absolute;
+}
+
+#full-view-rect {
+    z-index: 3;
+    pointer-events: none;
+    border: none;
+}
+
+.div {
+    display: flex;
+}
+
+.left {
+    display: flex;
+}
+
+.right {
+    margin-left: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+.right > button {
+    height: 2em;
+}
+
+.color-picker {
+    display: flex;
+    flex-direction: column;
+}
+
+.coord {
+    display: flex;
+}
+
+.coord > div {
+    flex: 1;
+}

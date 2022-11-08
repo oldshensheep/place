@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Place</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="left">
+    <div>
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="right">
+        <div class="color-picker">
+            <label>
+                pen color: <input id="color" type="color" value="#ffffff">
+            </label>
+            <label>
+                alpha: <input id="alpha" type="range" min="0" max="255" value="255">
+            </label>
+            <div>
+                <label for="hex-color">Hex:<input id="hex-color" type="text"></label>
+            </div>
+        </div>
+        <div class="coord">
+            <div>
+                <div>Mouse</div>
+                <div id="x">x:</div>
+                <div id="y">y:</div>
+            </div>
+            <div>
+                <div>Camera</div>
+                <div id="cx">x:</div>
+                <div id="cy">y:</div>
+            </div>
+        </div>
+
+        <button id="down-image">Download Image</button>
+        <button id="putBtn">Put pixel</button>
+        <div class="div">
+            <div class="full-view">
+                <canvas id="full-view-rect"></canvas>
+                <canvas id="fff"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="module">
+    import {getCanvasAndContext, setCanvasWindowSize} from "./utils.js"
+    import * as api from "./api.js";
+    import {ColorPicker} from "./ColorPicker.js"
+    import {Camera} from "./Camera.js";
+    import {canvasWidth, canvasHeight} from "./config.js";
+
+    const offScreenContext = getCanvasAndContext('#fff')
+    const viewContext = getCanvasAndContext('#canvas')
+    const offScreenRectContext = getCanvasAndContext('#full-view-rect')
+    // used for the fucking Plan A, see function draw()
+    const tempCtx = document.createElement("canvas").getContext("2d");
+
+    const mx = document.querySelector('#x');
+    const my = document.querySelector('#y');
+
+
+    const view = {
+        width: 1140,
+        height: 640
+    }
+
+    // global variables for rendering
+    const state = {
+        draw: false,
+        color: [],
+        moved: false,
+        camera: new Camera(canvasWidth, canvasHeight, view.width, view.height)
+    }
+    state.camera.callback = updateCoord()
+    state.camera.moveTo(canvasWidth / 2, canvasHeight / 2)
+    const colorPicker = new ColorPicker(
+        document.querySelector("#color"),
+        document.querySelector("#alpha"),
+        document.querySelector("#hex-color")
+    );
+
+    colorPicker.setCallback(function () {
+        state.color = colorPicker.getColorArray()
+        draw()
+    })
+
+    setCanvasWindowSize(offScreenContext, canvasWidth, canvasHeight)
+    setCanvasWindowSize(offScreenRectContext, canvasWidth, canvasHeight)
+    setCanvasWindowSize(viewContext, view.width, view.height)
+    setCanvasWindowSize(tempCtx, canvasWidth, canvasHeight)
+
+    // init canvas from server
+    offScreenContext.putImageData(new ImageData(await api.getImageBitmap(), canvasWidth, canvasHeight), 0, 0)
+
+    // first rendering
+    draw()
+
+    setupEventSourceEventListener()
+    setupOffScreenContextEventListener()
+    setupViewContextEventListener()
+
+    document.querySelector("#putBtn").addEventListener("click", () => {
+        putPixelOnCameraCenter()
+    })
+    document.querySelector("#down-image").addEventListener("click", () => {
+        downloadImage()
+    })
+
+
+    function setupEventSourceEventListener() {
+        let eventSource = api.pixelEventSource()
+        const imageData1x1 = offScreenContext.createImageData(1, 1);
+        setupEventListenner(eventSource, onOpen, onError, onMessage);
+
+        function onOpen(event) {
+            console.log("connection established", event)
+        }
+
+        function onMessage(event) {
+            console.log(`message received: ${event.data}`)
+            const data = JSON.parse(event.data);
+            const clampedArray = imageData1x1.data;
+            clampedArray[0] = data.color[0]
+            clampedArray[1] = data.color[1]
+            clampedArray[2] = data.color[2]
+            clampedArray[3] = data.color[3]
+            offScreenContext.putImageData(imageData1x1, data.x, data.y)
+            console.log(`putImageData: ${imageData1x1.data} --> (${data.x}, ${data.y})`)
+            draw()
+        }
+
+        function onError(event) {
+            console.log("connection error", event)
+            eventSource = api.pixelEventSource();
+            // setTimeout(() => setupEventListenner(eventSource, onOpen, onError, onMessage), 5000)
+            location.reload()
+        }
+
+        function setupEventListenner(eventSource, onOpen, onError, onMessage) {
+            eventSource.addEventListener("open", onOpen)
+            eventSource.addEventListener("error", onError)
+            eventSource.addEventListener("message", onMessage)
+        }
+    }
+
+    function setupViewContextEventListener() {
+        viewContext.canvas.addEventListener('pointermove', function (e) {
+            state.moved = true
+            if (state.draw === true) {
+                const facter = -state.camera.getScale() * 2;
+                state.camera.move(facter * e.movementX, facter * e.movementY)
+            }
+        }, false);
+
+        viewContext.canvas.addEventListener('pointermove', function (e) {
+            const [x, y] = translateToFullViewCoordinate(e.offsetX, e.offsetY);
+            mx.innerHTML = `x: ${x}`
+            my.innerHTML = `y: ${y}`
+        }, false);
+
+        viewContext.canvas.addEventListener('wheel', function (e) {
+            scaleEvent(e, ...state.camera.getCameraCenter());
+        })
+
+        viewContext.canvas.addEventListener('pointerdown', function (e) {
+            state.draw = true;
+            state.moved = false
+        }, false);
+
+        // TODO: 优化微小移动处理，如果移动距离过小，视为未移动
+        viewContext.canvas.addEventListener("pointerup", function (e) {
+            if (state.moved === false) {
+                const [x, y] = translateToFullViewCoordinate(e.offsetX, e.offsetY);
+                api.putPixel(x, y, state.color)
+                // TODO: error handling
+                draw()
+            }
+            state.draw = false;
+        })
+    }
+
+    function setupOffScreenContextEventListener() {
+        offScreenContext.canvas.addEventListener("wheel", function (e) {
+            scaleEvent(e, e.offsetX, e.offsetY)
+        })
+        offScreenContext.canvas.addEventListener("pointerdown", function (event) {
+            state.draw = true
+            state.camera.moveTo(event.offsetX, event.offsetY);
+        })
+
+        offScreenContext.canvas.addEventListener("pointermove", function (event) {
+            if (state.draw === true) {
+                state.camera.moveTo(event.offsetX, event.offsetY);
+            }
+        })
+        offScreenContext.canvas.addEventListener("pointerup", function (e) {
+            state.draw = false;
+        })
+    }
+
+
+    /**
+     *
+     * @param e {WheelEvent}
+     * @param x {Number}
+     * @param y {Number}
+     */
+    function scaleEvent(e, x, y) {
+        e.preventDefault()
+        if (e.deltaY > 0) {
+            state.camera.scaleFrom(x, y, 1.25)
+        } else if (e.deltaY < 0) {
+            state.camera.scaleFrom(x, y, 0.8)
+        }
+        draw()
+    }
+
+    function downloadImage() {
+        offScreenContext.canvas.toBlob(function (blob) {
+            const a = document.createElement("a");
+            a.download = "download";
+            a.href = URL.createObjectURL(blob);
+            a.dispatchEvent(new MouseEvent("click"));
+        })
+    }
+
+    function updateCoord() {
+        const cx = document.querySelector("#cx");
+        const cy = document.querySelector("#cy");
+        return function () {
+            const [x, y] = state.camera.getCameraCenter()
+            cx.innerHTML = `x: ${Math.floor(x)}`
+            cy.innerHTML = `y: ${Math.floor(y)}`
+        }
+    }
+
+    function translateToFullViewCoordinate(x, y) {
+        const xx = Math.floor(state.camera.state.x + x * state.camera.state.width / view.width)
+        const yy = Math.floor(state.camera.state.y + y * state.camera.state.height / view.height)
+        return [xx, yy]
+    }
+
+    function putPixelOnCameraCenter() {
+        const [x, y] = state.camera.getCameraCenter();
+        api.putPixel(Math.floor(x), Math.floor(y), state.color)
+    }
+
+    function drawToScreen() {
+        if (state.draw) {
+            draw()
+        }
+        requestAnimationFrame(drawToScreen)
+    }
+
+    drawToScreen()
+
+    function draw() {
+        viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
+
+        // TODO: Fuck Plan B. give up...
+        // const imageData = offScreenContext.getImageData(state.camera.state.x, state.camera.state.y,
+        //     state.camera.state.width , state.camera.state.height  );
+        // console.log(state.camera.state)
+        // const length = imageData.data.length / 8;
+        // imageData.data[length * 4] = state.color[0]
+        // imageData.data[length * 4 + 1] = state.color[1]
+        // imageData.data[length * 4 + 2] = state.color[2]
+        // imageData.data[length * 4 + 3] = state.color[3]
+        // viewContext.putImageData(imageData, 0, 0)
+        // viewContext.drawImage(viewContext.canvas,
+        //     0, 0,
+        //     state.camera.state.width, state.camera.state.height,
+        //     0, 0,
+        //     viewContext.canvas.width, viewContext.canvas.height
+        // );
+
+        // TODO: PLAN A
+        tempCtx.clearRect(0, 0, tempCtx.canvas.width, tempCtx.canvas.height);
+        tempCtx.drawImage(offScreenContext.canvas, 0, 0);
+        const cameraCenter = state.camera.getCameraCenter();
+        tempCtx.clearRect(Math.floor(cameraCenter[0]), Math.floor(cameraCenter[1]), 1, 1)
+        tempCtx.fillStyle = `rgba(${state.color[0]}, ${state.color[1]}, ${state.color[2]}, ${state.color[3] / 255})`
+        tempCtx.fillRect(Math.floor(cameraCenter[0]), Math.floor(cameraCenter[1]), 1, 1)
+        viewContext.drawImage(tempCtx.canvas,
+            state.camera.state.x, state.camera.state.y,
+            state.camera.state.width, state.camera.state.height,
+            0, 0,
+            viewContext.canvas.width, viewContext.canvas.height
+        );
+
+        // draw camera rect
+        offScreenRectContext.clearRect(0, 0, offScreenRectContext.canvas.width, offScreenRectContext.canvas.height);
+        offScreenRectContext.lineWidth = 4
+        offScreenRectContext.strokeRect(state.camera.state.x, state.camera.state.y, state.camera.state.width, state.camera.state.height);
+    }
+
+</script>
+</body>
+
+</html>
