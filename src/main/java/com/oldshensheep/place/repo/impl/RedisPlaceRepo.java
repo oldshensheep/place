@@ -2,19 +2,15 @@ package com.oldshensheep.place.repo.impl;
 
 import com.oldshensheep.place.repo.PlaceRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Arrays;
 
-@Primary
 @RequiredArgsConstructor
 public class RedisPlaceRepo implements PlaceRepository {
 
     private final RedisTemplate<String, byte[]> redisTemplate;
 
-
-    //    @Value("#{app.placeRedisKey}")
     private final String PLACE_REDIS_KEY = "PLACE";
 
     public void setOne(byte[] value, Integer offset) {

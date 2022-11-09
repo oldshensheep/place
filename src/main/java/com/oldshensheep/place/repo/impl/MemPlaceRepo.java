@@ -2,47 +2,15 @@ package com.oldshensheep.place.repo.impl;
 
 import com.oldshensheep.place.config.AppConfig;
 import com.oldshensheep.place.repo.PlaceRepository;
-import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class MemPlaceRepo implements PlaceRepository {
 
     private final byte[] data;
-    private final String BACKUP_FILE_NAME = "image_bitmap_backup.bin";
-
-    private final AppConfig appConfig;
 
     public MemPlaceRepo(AppConfig appConfig) {
-        this.appConfig = appConfig;
         data = new byte[appConfig.getByteNum()];
-        init();
-    }
-
-    private void init() {
-        File file = new File(BACKUP_FILE_NAME);
-        if (file.exists()) {
-            try {
-                byte[] bytes = Files.readAllBytes(file.toPath());
-                log.info("Reading data from backup file: %s".formatted(BACKUP_FILE_NAME));
-                if (bytes.length > appConfig.getByteNum()) {
-                    System.arraycopy(bytes, 0, data, 0, appConfig.getByteNum());
-                    log.warn("backup data is too large: %s bytes, cut off to %s bytes"
-                            .formatted(bytes.length, appConfig.getByteNum()));
-                } else {
-                    System.arraycopy(bytes, 0, data, 0, bytes.length);
-                }
-            } catch (IOException e) {
-                log.error("reading backup file: %s".formatted(BACKUP_FILE_NAME), e);
-            }
-        }
     }
 
     @Override
@@ -68,14 +36,4 @@ public class MemPlaceRepo implements PlaceRepository {
     }
 
 
-    @PreDestroy
-    @Scheduled(fixedRateString = "#{appConfig.backupRate}", timeUnit = TimeUnit.SECONDS)
-    void backup() {
-        try (FileOutputStream fos = new FileOutputStream(BACKUP_FILE_NAME)) {
-            fos.write(data);
-            log.info("backup data to %s".formatted(BACKUP_FILE_NAME));
-        } catch (IOException e) {
-            log.error("backup data to %s".formatted(BACKUP_FILE_NAME), e);
-        }
-    }
 }

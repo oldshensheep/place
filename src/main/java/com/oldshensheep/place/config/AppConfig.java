@@ -31,6 +31,8 @@ public class AppConfig {
         if (token == null || token.length() <= 6) {
             this.token = UUID.randomUUID().toString();
             log.warn("invalid token %s, random uuid used".formatted(token));
+        } else {
+            this.token = token;
         }
     }
 
