@@ -13,7 +13,7 @@ canvas {
     position: absolute;
 }
 
-#full-view-rect {
+#full-view-camera {
     z-index: 3;
     pointer-events: none;
     border: none;
@@ -27,19 +27,27 @@ canvas {
     display: flex;
 }
 
-.right {
+.right-panel {
     margin-left: 4px;
     display: flex;
     flex-direction: column;
 }
 
-.right > button {
+.right-panel > div {
+    margin-bottom: 4px;
+}
+
+.right-panel > button {
     height: 2em;
 }
 
 .color-picker {
     display: flex;
     flex-direction: column;
+}
+
+.color-picker > label {
+    margin-bottom: 4px;
 }
 
 .coord {

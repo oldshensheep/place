@@ -22,6 +22,8 @@ public class AppConfig {
 
     public Boolean useRedis = true;
 
+    public Long rateLimit = 7L;
+
     public int getByteNum() {
         return this.height * this.width * 4;
     }

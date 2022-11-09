@@ -32,6 +32,9 @@ public class RateLimiterService {
 
     public void setResetTimeout(Duration resetTimeout) {
         this.resetTimeout = resetTimeout;
+        if (resetTimeout.isZero()) {
+            p = s -> -1L;
+        }
     }
 
     public long shouldLimit(String key) {

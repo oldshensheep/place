@@ -13,7 +13,10 @@
     <div>
         <canvas id="canvas"></canvas>
     </div>
-    <div class="right">
+    <div class="right-panel">
+        <div>Cool down:
+            <span id="limit">0</span>
+        </div>
         <div class="color-picker">
             <label>
                 pen color: <input id="color" type="color" value="#ffffff">
@@ -21,9 +24,7 @@
             <label>
                 alpha: <input id="alpha" type="range" min="0" max="255" value="255">
             </label>
-            <div>
-                <label for="hex-color">Hex:<input id="hex-color" type="text"></label>
-            </div>
+            <label for="hex-color">Hex:<input id="hex-color" type="text"></label>
         </div>
         <div class="coord">
             <div>
@@ -42,8 +43,8 @@
         <button id="putBtn">Put pixel</button>
         <div class="div">
             <div class="full-view">
-                <canvas id="full-view-rect"></canvas>
-                <canvas id="fff"></canvas>
+                <canvas id="full-view-camera"></canvas>
+                <canvas id="view"></canvas>
             </div>
         </div>
     </div>
@@ -57,15 +58,16 @@
     import {Camera} from "./Camera.js";
     import {canvasWidth, canvasHeight} from "./config.js";
 
-    const offScreenContext = getCanvasAndContext('#fff')
+    const offScreenContext = getCanvasAndContext('#view')
     const viewContext = getCanvasAndContext('#canvas')
-    const offScreenRectContext = getCanvasAndContext('#full-view-rect')
+    const offScreenRectContext = getCanvasAndContext('#full-view-camera')
     // used for the fucking Plan A, see function draw()
     const tempCtx = document.createElement("canvas").getContext("2d");
 
     const mx = document.querySelector('#x');
     const my = document.querySelector('#y');
 
+    const limitElement = document.querySelector('#limit');
 
     const view = {
         width: 1140,
@@ -74,6 +76,7 @@
 
     // global variables for rendering
     const state = {
+        limit: 0,
         draw: false,
         color: [],
         moved: false,
@@ -176,11 +179,10 @@
         }, false);
 
         // TODO: 优化微小移动处理，如果移动距离过小，视为未移动
-        viewContext.canvas.addEventListener("pointerup", function (e) {
+        viewContext.canvas.addEventListener("pointerup", async function (e) {
             if (state.moved === false) {
                 const [x, y] = translateToFullViewCoordinate(e.offsetX, e.offsetY);
-                api.putPixel(x, y, state.color)
-                // TODO: error handling
+                await putPixel(x, y, state.color);
                 draw()
             }
             state.draw = false;
@@ -248,9 +250,24 @@
         return [xx, yy]
     }
 
-    function putPixelOnCameraCenter() {
+    async function putPixelOnCameraCenter() {
         const [x, y] = state.camera.getCameraCenter();
-        api.putPixel(Math.floor(x), Math.floor(y), state.color)
+        await putPixel(Math.floor(x), Math.floor(y), state.color)
+    }
+
+    let interval = null;
+    async function putPixel(x, y, color) {
+        const response = await api.putPixel(x, y, color);
+        state.limit = parseInt(response.headers.get("X-RateLimit-Reset"));
+        limitElement.innerHTML = state.limit
+        clearInterval(interval)
+        interval = setInterval(() => {
+            const n = String(parseInt(limitElement.innerHTML) - 1);
+            limitElement.innerHTML = n
+            if (n <= 0) {
+                clearInterval(interval)
+            }
+        }, 1000);
     }
 
     function drawToScreen() {
