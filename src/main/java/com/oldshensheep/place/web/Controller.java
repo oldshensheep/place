@@ -24,7 +24,6 @@ public class Controller {
     private final PlaceService service;
     private final MQService mqService;
 
-    // TODO fuck this
     private final HashMap<SseEmitter, SseEmitter> sseEmitters = new HashMap<>();
 
     public Controller(PlaceService service, MQService mqService, AppConfig appConfig) {
@@ -101,6 +100,7 @@ public class Controller {
     }
 
     private void initialize() {
+        log.info("using token %s".formatted(appConfig.token));
         mqService.setConsumer(s -> {
             try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
                 for (SseEmitter sseEmitter : sseEmitters.keySet()) {

@@ -1,5 +1,5 @@
 ### init canvas
-POST http://localhost:8080/init
+POST http://localhost:8080/init?token=cb2f4c23-5bfb-485c-aa65-e5873f279bab
 
 ### put a pixel
 PUT http://localhost:8080/pixels

@@ -19,7 +19,7 @@ app:
   height: 1000                                  # canvas height
   backup-rate: 300                              # backup rate in seconds
   init-image: "init.png"                        # initial image path
-  token: "cb2f4c23-5bfb-485c-aa65-e5873f279bab" # token for operation that requires authentication
+  token:                                        # if is null or length <= 6, then random uuid used
   use-redis: true
   rate-limit: 7
 debug: false

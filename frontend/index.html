@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Place</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,7 +15,7 @@
         <canvas id="canvas"></canvas>
     </div>
     <div class="right-panel">
-        <div id="limit-bg" class="bg-yellow">Cool down:
+        <div id="limit-bg" class="bg-green">Cool down:
             <span id="limit">0</span>
         </div>
         <div class="color-picker">
@@ -177,7 +178,7 @@
             state.moved = false
         }, false);
 
-        // TODO: 优化微小移动处理，如果移动距离过小，视为未移动
+        // TODO: Optimize the small movement processing, if the movement distance is too small, it is regarded as not moving
         viewContext.canvas.addEventListener("pointerup", async function (e) {
             if (state.moved === false) {
                 const [x, y] = translateToFullViewCoordinate(e.offsetX, e.offsetY);

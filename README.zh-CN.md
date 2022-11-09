@@ -50,12 +50,9 @@ PS：
 ### 初始化画布 (可选)
 
 可以手动从一张图片初始化画布，POST 访问 http://localhost:8080/init?token=cb2f4c23-5bfb-485c-aa65-e5873f279bab 即可从配置文件中的`app.init-image`
-值初始化，默认为`dd.png`。
+值初始化，默认为`dd.png`。初始化画布需要一个token，在配置文件的`app.token`中，默认为随机生成一个uuid。
 
 **注意:** 如果图像大小和配置的画布大小不同会自动缩放到画布大小。
-
-初始化画布需要一个token，在配置文件的`app.token`中，默认为`cb2f4c23-5bfb-485c-aa65-e5873f279bab`。
-为了安全请配置另外一个token
 
 ### 使用 Redis 和 MySQL (可选)
 

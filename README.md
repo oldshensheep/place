@@ -60,12 +60,10 @@ The canvas can be initialized manually from an image by HTTP POST http://localho
 the `app.init-image` value in the configuration file.
 value in the configuration file, which defaults to `dd.png`.
 
+Initializing the canvas requires a token, which is in the `app.token` of the configuration file, and The default is to randomly generate an uuid
+
 **Note:** If the image size is different from the configured canvas size it will be automatically scaled to the canvas
 size.
-
-Initializing the canvas requires a token, which is in the `app.token` of the configuration file, and defaults
-to `cb2f4c23-5bfb-485c-aa65-e5873f279bab`.
-For security please configure another token
 
 ### Use Redis and MySQL (optional)
 
