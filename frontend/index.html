@@ -14,7 +14,7 @@
         <canvas id="canvas"></canvas>
     </div>
     <div class="right-panel">
-        <div>Cool down:
+        <div id="limit-bg" class="bg-yellow">Cool down:
             <span id="limit">0</span>
         </div>
         <div class="color-picker">
@@ -67,7 +67,6 @@
     const mx = document.querySelector('#x');
     const my = document.querySelector('#y');
 
-    const limitElement = document.querySelector('#limit');
 
     const view = {
         width: 1140,
@@ -256,16 +255,23 @@
     }
 
     let interval = null;
+    const limitElement = document.querySelector('#limit');
+    const limitBG = document.querySelector("#limit-bg");
+
     async function putPixel(x, y, color) {
         const response = await api.putPixel(x, y, color);
         state.limit = parseInt(response.headers.get("X-RateLimit-Reset"));
         limitElement.innerHTML = state.limit
         clearInterval(interval)
+        limitBG.classList.remove("bg-green")
+        limitBG.classList.add("bg-yellow")
         interval = setInterval(() => {
             const n = String(parseInt(limitElement.innerHTML) - 1);
             limitElement.innerHTML = n
             if (n <= 0) {
                 clearInterval(interval)
+                limitBG.classList.remove("bg-yellow")
+                limitBG.classList.add("bg-green")
             }
         }, 1000);
     }

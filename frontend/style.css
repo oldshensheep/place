@@ -57,3 +57,36 @@ canvas {
 .coord > div {
     flex: 1;
 }
+
+.bg-yellow {
+    background-color: #ffc107;
+    animation-duration: 1s;
+    animation-name: green-to-yellow;
+}
+
+.bg-green {
+    background-color: #8bc34a;
+    color: azure;
+    animation-duration: 1s;
+    animation-name: yellow-to-green;
+}
+
+@keyframes yellow-to-green {
+    from {
+        background-color: #ffc107;
+    }
+    to {
+        background-color: #8bc34a;
+        color: azure;
+    }
+}
+
+@keyframes green-to-yellow {
+    from {
+        background-color: #8bc34a;
+        color: azure;
+    }
+    to {
+        background-color: #ffc107;
+    }
+}
