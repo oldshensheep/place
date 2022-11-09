@@ -35,7 +35,9 @@ public class RateLimitFilter extends OncePerRequestFilter {
         String method = request.getMethod();
         // TODO:
         if (method.equals("PUT") && requestURI.startsWith("/pixels")) {
-            if (rateLimiterService.shouldLimit(remoteAddr)) {
+            long limit = rateLimiterService.shouldLimit(remoteAddr);
+            if (limit > 0) {
+                response.setHeader("X-RateLimit-Reset", String.valueOf(limit));
                 response.setStatus(429);
                 return;
             }
