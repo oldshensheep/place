@@ -20,6 +20,7 @@ public class AppConfig {
 
     public String token;
 
+    public Boolean useRedis = true;
 
     public int getByteNum() {
         return this.height * this.width * 4;

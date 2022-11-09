@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class AvailableService {
 
+    private final AppConfig appConfig;
     private final RedisConnectionFactory connectionFactory;
 
     public boolean isRedisAvailable() {
+        if (!appConfig.useRedis) return false;
         try {
             connectionFactory.getConnection();
         } catch (RedisConnectionFailureException e) {

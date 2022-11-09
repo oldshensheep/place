@@ -20,5 +20,5 @@ app:
   backup-rate: 300                              # backup rate in seconds
   init-image: "init.png"                        # initial image path
   token: "cb2f4c23-5bfb-485c-aa65-e5873f279bab" # token for operation that requires authentication
-
+  use-redis: true
 debug: false
