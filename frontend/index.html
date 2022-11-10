@@ -10,7 +10,7 @@
 
 <body>
 
-<div class="left">
+<div class="main">
     <div>
         <canvas id="canvas"></canvas>
     </div>
@@ -121,13 +121,17 @@
     function setupEventSourceEventListener() {
         let eventSource = api.pixelEventSource()
         const imageData1x1 = offScreenContext.createImageData(1, 1);
-        setupEventListenner(eventSource, onOpen, onError, onMessage);
+        setupEventListenner(eventSource, onOpen, onError, onMessage, onNewPixel);
 
         function onOpen(event) {
             console.log("connection established", event)
         }
 
         function onMessage(event) {
+            console.log("new message", event.data)
+        }
+
+        function onNewPixel(event) {
             console.log(`message received: ${event.data}`)
             const data = JSON.parse(event.data);
             const clampedArray = imageData1x1.data;
@@ -144,13 +148,14 @@
             console.log("connection error", event)
             eventSource = api.pixelEventSource();
             // setTimeout(() => setupEventListenner(eventSource, onOpen, onError, onMessage), 5000)
-            location.reload()
+            // location.reload()
         }
 
-        function setupEventListenner(eventSource, onOpen, onError, onMessage) {
+        function setupEventListenner(eventSource, onOpen, onError, onMessage, onNewPixel) {
             eventSource.addEventListener("open", onOpen)
             eventSource.addEventListener("error", onError)
             eventSource.addEventListener("message", onMessage)
+            eventSource.addEventListener("newPixel", onNewPixel)
         }
     }
 
@@ -179,11 +184,10 @@
         }, false);
 
         // TODO: Optimize the small movement processing, if the movement distance is too small, it is regarded as not moving
-        viewContext.canvas.addEventListener("pointerup", async function (e) {
+        viewContext.canvas.addEventListener("pointerup", function (e) {
             if (state.moved === false) {
                 const [x, y] = translateToFullViewCoordinate(e.offsetX, e.offsetY);
-                await putPixel(x, y, state.color);
-                draw()
+                putPixel(x, y, state.color);
             }
             state.draw = false;
         })
@@ -260,12 +264,21 @@
     const limitBG = document.querySelector("#limit-bg");
 
     async function putPixel(x, y, color) {
-        const response = await api.putPixel(x, y, color);
+        let response = null
+        try {
+            response = await api.putPixel(x, y, color);
+        } catch (err) {
+            //TODO: handle error
+            console.log(err)
+            return
+        }
         state.limit = parseInt(response.headers.get("X-RateLimit-Reset"));
         limitElement.innerHTML = state.limit
         clearInterval(interval)
         limitBG.classList.remove("bg-green")
         limitBG.classList.add("bg-yellow")
+        viewContext.canvas.classList.remove("cursor-inherit")
+        viewContext.canvas.classList.add("cursor-not-allowed")
         interval = setInterval(() => {
             const n = String(parseInt(limitElement.innerHTML) - 1);
             limitElement.innerHTML = n
@@ -273,6 +286,8 @@
                 clearInterval(interval)
                 limitBG.classList.remove("bg-yellow")
                 limitBG.classList.add("bg-green")
+                viewContext.canvas.classList.add("cursor-inherit")
+                viewContext.canvas.classList.remove("cursor-not-allowed")
             }
         }, 1000);
     }

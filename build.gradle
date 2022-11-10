@@ -27,7 +27,6 @@ dependencies {
     implementation 'org.hibernate.orm:hibernate-community-dialects'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.xerial:sqlite-jdbc'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -53,7 +52,7 @@ tasks.withType(JavaExec) {
     jvmArgs += '--enable-preview'
 }
 
-// TODO: graalvm
+// TODO: graalvm hibernate
 //https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#configuration
 graalvmNative {
     binaries {

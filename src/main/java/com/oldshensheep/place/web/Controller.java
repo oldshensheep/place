@@ -9,13 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import static org.springframework.web.servlet.mvc.method.annotation.SseEmitter.event;
 
 @Slf4j
 @RestController
@@ -24,7 +27,7 @@ public class Controller {
     private final PlaceService service;
     private final MQService mqService;
 
-    private final HashMap<SseEmitter, SseEmitter> sseEmitters = new HashMap<>();
+    private final ConcurrentHashMap<SseEmitter, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
     public Controller(PlaceService service, MQService mqService, AppConfig appConfig) {
         this.service = service;
@@ -106,17 +109,31 @@ public class Controller {
                 for (SseEmitter sseEmitter : sseEmitters.keySet()) {
                     executor.submit(() -> {
                         try {
-                            sseEmitter.send(s);
+                            sseEmitter.send(event().name("newPixel").data(s));
                             log.info("Send sseEmitter: %s".formatted(s));
                         } catch (IOException e) {
-                            // client will reconnect automatically
-//                            it.remove();
                             log.warn("IOException sseEmitter.send %s. Cased by %s".formatted(sseEmitter, e.getMessage()));
                         }
                     });
                 }
             }
         });
+    }
+
+    @Scheduled(fixedRate = 30, timeUnit = TimeUnit.SECONDS)
+    private void heartbeat() {
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (SseEmitter sseEmitter : sseEmitters.keySet()) {
+                executor.submit(() -> {
+                    try {
+                        sseEmitter.send(event().name("ping").data("ping"));
+                        log.debug("%s, ping".formatted(sseEmitter));
+                    } catch (IOException e) {
+                        log.warn("IOException sseEmitter.send %s. Cased by %s".formatted(sseEmitter, e.getMessage()));
+                    }
+                });
+            }
+        }
     }
 
 }

@@ -23,7 +23,7 @@ canvas {
     display: flex;
 }
 
-.left {
+.main {
     display: flex;
 }
 
@@ -56,6 +56,14 @@ canvas {
 
 .coord > div {
     flex: 1;
+}
+
+.cursor-not-allowed {
+    cursor: not-allowed;
+}
+
+.cursor-inherit {
+    cursor: inherit;
 }
 
 .bg-yellow {

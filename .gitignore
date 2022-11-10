@@ -37,3 +37,4 @@ out/
 .vscode/
 /data.sqlite
 /image_bitmap_backup.bin
+/init.png
