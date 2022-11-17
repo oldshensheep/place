@@ -66,6 +66,10 @@ canvas {
     cursor: inherit;
 }
 
+.github-link {
+    margin-left: 4px;
+}
+
 .bg-yellow {
     background-color: #ffc107;
     animation-duration: 1s;
