@@ -124,7 +124,7 @@ public class PlaceService {
     }
 
     @PreDestroy
-    @Scheduled(fixedRateString = "#{appConfig.backupRate}", timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedRate = 300, timeUnit = TimeUnit.SECONDS)
     void backup() {
         try (FileOutputStream fos = new FileOutputStream(BACKUP_FILE_NAME)) {
             fos.write(placeRepository.getAll());

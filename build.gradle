@@ -52,9 +52,10 @@ tasks.withType(JavaExec) {
     jvmArgs += '--enable-preview'
 }
 
-// TODO: graalvm hibernate
-//https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#configuration
 graalvmNative {
+    metadataRepository {
+        enabled = true
+    }
     binaries {
         main {
             buildArgs.add('--enable-preview')
