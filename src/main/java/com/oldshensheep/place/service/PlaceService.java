@@ -61,7 +61,7 @@ public class PlaceService {
         if (placeRepository instanceof MemPlaceRepo) {
             placeRepository.setAll(data);
         } else if (placeRepository instanceof RedisPlaceRepo) {
-            if (placeRepository.getAll().length == 0) {
+            if (placeRepository.getAll() == null || placeRepository.getAll().length == 0) {
                 placeRepository.setAll(data);
             }
         }
