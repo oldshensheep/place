@@ -11,6 +11,9 @@ Content-Type:  application/json
   "color": [255,0,0,255]
 }
 
+### get a pixel
+GET http://localhost:8080/pixels?x=10&y=10
+
 ### get all pixels
 GET http://localhost:8080/pixels/all
 

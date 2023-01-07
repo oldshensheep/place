@@ -61,6 +61,7 @@ graalvmNative {
             buildArgs.add('--enable-preview')
             buildArgs.add('--verbose')
             buildArgs.add('--native-image-info')
+            buildArgs.add('--enable-monitoring=jfr')
         }
     }
 }
