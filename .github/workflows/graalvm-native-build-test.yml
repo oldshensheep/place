@@ -1,8 +1,13 @@
 name: Graalvm native build test
 on: [pull_request, workflow_dispatch]
 jobs:
-  build-on-linux:
-    runs-on: ubuntu-latest
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+
     steps:
       - uses: actions/checkout@v3
       - uses: graalvm/setup-graalvm@v1
@@ -15,16 +20,12 @@ jobs:
       - name: Gradle build
         run: ./gradlew nativeCompile
 
-  build-on-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          version: "22.3.0"
-          java-version: "19"
-          components: "native-image"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run
+        run: |
+          cd build/native/nativeCompile
+          ./place
 
-      - name: Gradle build
-        run: ./gradlew nativeCompile
+      - name: Upload binary
+        uses: actions/upload-artifact@v3
+        with:
+          path: build/native/nativeCompile
