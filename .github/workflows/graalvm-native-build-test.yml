@@ -24,6 +24,7 @@ jobs:
         run: |
           cd build/native/nativeCompile
           ./place
+        timeout-minutes: 0.3
 
       - name: Upload binary
         uses: actions/upload-artifact@v3
