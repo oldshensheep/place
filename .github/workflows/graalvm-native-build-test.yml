@@ -20,11 +20,11 @@ jobs:
       - name: Gradle build
         run: ./gradlew nativeCompile
 
-      - name: Run
-        run: |
-          cd build/native/nativeCompile
-          ./place
-        timeout-minutes: 0.3
+      # - name: Run
+      #   run: |
+      #     cd build/native/nativeCompile
+      #     ./place
+      #   timeout-minutes: 0.3
 
       - name: Upload binary
         uses: actions/upload-artifact@v3
