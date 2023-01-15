@@ -16,6 +16,7 @@ jobs:
           java-version: "19"
           components: "native-image"
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          cache: "gradle"
 
       - name: Gradle build
         run: ./gradlew nativeCompile
