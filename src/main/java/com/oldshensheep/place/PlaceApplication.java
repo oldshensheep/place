@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class PlaceApplication {
 
     public static void main(String[] args) {
+        System.setProperty("io.lettuce.core.jfr", "false");
         SpringApplication.run(PlaceApplication.class, args);
     }
 
