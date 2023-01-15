@@ -41,7 +41,7 @@ PS：
 
 应用启动时会尝试连接Redis，如果连接不上则会使用HashMap / byte[] 等内置数据类型代替。
 
-如果没有使用Redis默认每5分钟会备份当前画布信息到运行路径下的`image_bitmap_backup.bin`文件，启动时会自动加载此文件。
+默认每5分钟会备份当前画布信息到运行路径下的`image_bitmap_backup.bin`文件，启动时会自动加载此文件。
 
 正常关闭应用程序也会备份到此文件。
 
@@ -49,7 +49,8 @@ PS：
 
 ### 初始化画布 (可选)
 
-可以手动从一张图片初始化画布，POST 访问 http://localhost:8080/init?token=cb2f4c23-5bfb-485c-aa65-e5873f279bab 即可从配置文件中的`app.init-image`
+可以手动从一张图片初始化画布，POST 访问 http://localhost:8080/init?token=cb2f4c23-5bfb-485c-aa65-e5873f279bab
+即可从配置文件中的`app.init-image`
 值初始化，默认为`dd.png`。初始化画布需要一个token，在配置文件的`app.token`中，默认为随机生成一个uuid。
 
 **注意:** 如果图像大小和配置的画布大小不同会自动缩放到画布大小。
@@ -77,6 +78,15 @@ app:
 ```
 
 ## 开发
+
+### Graalvm Native Image
+
+现在此项目支持使用Graalvm构建Native镜像，运行无需安装JDK。
+构建步骤也非常简单，只需在平台上运行以下命令。
+
+```shell
+./gradlew nativeImage
+```
 
 ### 后端
 

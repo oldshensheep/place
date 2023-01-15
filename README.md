@@ -23,7 +23,7 @@ such as `java --enable-preview -jar app.jar`
 
 ### Minimal dependency run
 
-The minimal run does not require any external dependencies (Redis/MySQL) to run. Just download the GitHub release jar 
+The minimal run does not require any external dependencies (Redis/MySQL) to run. Just download the GitHub release jar
 
 Then run `java --enable-preview -jar filename` in console
 
@@ -46,7 +46,7 @@ PS:
 The application will try to connect to Redis when it starts, and if it doesn't connect, it will use a built-in data type
 like HashMap / byte[] instead.
 
-If Redis is not used, the current canvas information will be backed up every 5 minutes to the `image_bitmap_backup.bin`
+The current canvas information will be backed up every 5 minutes to the `image_bitmap_backup.bin`
 file in the runtime path, which will be loaded automatically at startup.
 
 This file will also be backed up when the application is closed normally.
@@ -56,11 +56,13 @@ not require high performance.
 
 ### Initialize canvas (optional)
 
-The canvas can be initialized manually from an image by HTTP POST http://localhost:8080/init?token=cb2f4c23-5bfb-485c-aa65-e5873f279bab to initialize it from
+The canvas can be initialized manually from an image by HTTP
+POST http://localhost:8080/init?token=cb2f4c23-5bfb-485c-aa65-e5873f279bab to initialize it from
 the `app.init-image` value in the configuration file.
 value in the configuration file, which defaults to `dd.png`.
 
-Initializing the canvas requires a token, which is in the `app.token` of the configuration file, and The default is to randomly generate an uuid
+Initializing the canvas requires a token, which is in the `app.token` of the configuration file, and The default is to
+randomly generate an uuid
 
 **Note:** If the image size is different from the configured canvas size it will be automatically scaled to the canvas
 size.
@@ -89,6 +91,15 @@ app:
 ```
 
 ## Development
+
+### Graalvm Native Image
+
+This project now supports building Native images using Graalvm, which runs without installing the JDK.
+The build steps are also very simple, just run the following command on the platform.
+
+```shell
+. /gradlew nativeImage
+```
 
 ### Backend
 
