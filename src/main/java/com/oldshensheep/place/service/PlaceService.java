@@ -73,8 +73,8 @@ public class PlaceService {
 
 
     public void setAllPlaces(byte[] allPlaces) {
-        if (allPlaces.length != MinOPSize) {
-            throw new IllegalArgumentException("value must be a byte array of %s length".formatted(MinOPSize));
+        if (allPlaces.length != appConfig.getByteNum()) {
+            throw new IllegalArgumentException("value must be a byte array of %s length".formatted(appConfig.getByteNum()));
         }
         placeRepository.setAll(allPlaces);
     }

@@ -30,7 +30,6 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         if (remoteAddr == null) {
             remoteAddr = request.getRemoteAddr();
         }
-        log.debug(remoteAddr);
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
         if (method.equals("PUT") && requestURI.startsWith("/pixels")) {
@@ -38,6 +37,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
             if (limit > 0) {
                 response.setHeader("X-RateLimit-Reset", String.valueOf(limit));
                 response.setStatus(429);
+                log.info("Limit IP: %s".formatted(remoteAddr));
                 return false;
             }
         }

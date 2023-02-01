@@ -2,6 +2,9 @@
   "resources":{
   "includes":[
     {
+      "pattern":"public/.*$"
+    },
+    {
       "pattern":"\\QMETA-INF/maven/org.xerial/sqlite-jdbc/pom.properties\\E"
     }, 
     {

@@ -32,6 +32,12 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+processResources {
+    from ('frontend') {
+        into 'public'
+    }
+}
+
 tasks.named('bootBuildImage') {
     buildpacks = ['gcr.io/paketo-buildpacks/bellsoft-liberica:9.9.0-ea', 'gcr.io/paketo-buildpacks/java-native-image']
 }
