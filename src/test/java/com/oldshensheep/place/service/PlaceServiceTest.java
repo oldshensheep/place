@@ -42,7 +42,7 @@ class PlaceServiceTest {
                 color.get(2).byteValue(),
                 color.get(3).byteValue(),
         };
-        placeService.setPixel(0, 0, color);
+        placeService.setPixel(0, 0, color, "");
         byte[] pixel = placeService.getPixel(0, 0);
         Assertions.assertArrayEquals(colorBytes, pixel);
     }

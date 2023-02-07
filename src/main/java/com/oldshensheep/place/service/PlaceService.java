@@ -93,7 +93,7 @@ public class PlaceService {
     }
 
 
-    public void setPixel(int x, int y, List<Integer> color) {
+    public void setPixel(int x, int y, List<Integer> color, String ip) {
         int offset = (x + y * appConfig.width) * MinOPSize;
         var bytes = new byte[]{
                 color.get(0).byteValue(),
@@ -112,6 +112,7 @@ public class PlaceService {
         Operation entity = Operation.builder()
                 .color(ByteBuffer.wrap(bytes).getInt())
                 .offset(offset)
+                .ip(ip)
                 .user(null)
                 .build();
         operationRepository.save(entity);

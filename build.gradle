@@ -17,7 +17,6 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
@@ -36,10 +35,6 @@ processResources {
     from ('frontend') {
         into 'public'
     }
-}
-
-tasks.named('bootBuildImage') {
-    buildpacks = ['gcr.io/paketo-buildpacks/bellsoft-liberica:9.9.0-ea', 'gcr.io/paketo-buildpacks/java-native-image']
 }
 
 tasks.named('test') {

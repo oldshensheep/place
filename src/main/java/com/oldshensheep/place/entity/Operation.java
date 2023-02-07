@@ -22,8 +22,12 @@ public class Operation extends Base {
 
     @Column(name = "offset")
     private Integer offset;
+
     @Column(name = "color")
     private Integer color;
+
+    @Column(name = "ip")
+    private String ip;
 
     public byte[] getColorBytes() {
         var put = ByteBuffer.allocate(4).putInt(color);
