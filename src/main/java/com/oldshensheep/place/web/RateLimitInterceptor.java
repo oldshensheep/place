@@ -2,6 +2,8 @@ package com.oldshensheep.place.web;
 
 import com.oldshensheep.place.config.AppConfig;
 import com.oldshensheep.place.service.RateLimiterService;
+import com.oldshensheep.place.utils.Utils;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +28,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String remoteAddr = request.getHeader("X-FORWARDED-FOR");
-        if (remoteAddr == null) {
-            remoteAddr = request.getRemoteAddr();
-        }
+        var remoteAddr = Utils.getClientIP(request);
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
         if (method.equals("PUT") && requestURI.startsWith("/pixels")) {

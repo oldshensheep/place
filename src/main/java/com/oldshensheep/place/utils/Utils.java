@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 public class Utils {
 
     public static byte[] scaleImageTo(BufferedImage bufferedImage, int width, int height) {
@@ -20,5 +22,16 @@ public class Utils {
         graphics.dispose();
 
         return ((DataBufferByte) image.getData().getDataBuffer()).getData();
+    }
+
+    public static String getClientIP(HttpServletRequest request) {
+        String remoteAddr = request.getHeader("CF-Connecting-IP");
+        if (remoteAddr == null) {
+            remoteAddr = request.getHeader("X-FORWARDED-FOR");
+        }
+        if (remoteAddr == null) {
+            remoteAddr = request.getHeader("X-FORWARDED-FOR");
+        }
+        return remoteAddr;
     }
 }

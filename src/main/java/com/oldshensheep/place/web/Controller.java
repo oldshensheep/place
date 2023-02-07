@@ -3,6 +3,7 @@ package com.oldshensheep.place.web;
 import com.oldshensheep.place.config.AppConfig;
 import com.oldshensheep.place.service.MQService;
 import com.oldshensheep.place.service.PlaceService;
+import com.oldshensheep.place.utils.Utils;
 import com.oldshensheep.place.web.request.PutPixelRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,10 +52,7 @@ public class Controller {
 
     @PutMapping("/pixels")
     public void putOne(@RequestBody PutPixelRequest pixelRequest, HttpServletRequest request) {
-        String remoteAddr = request.getHeader("X-FORWARDED-FOR");
-        if (remoteAddr == null) {
-            remoteAddr = request.getRemoteAddr();
-        }
+        var remoteAddr = Utils.getClientIP(request);
         ValidateUtils.Between(pixelRequest.x(), 0, appConfig.width);
         ValidateUtils.Between(pixelRequest.y(), 0, appConfig.height);
         ValidateUtils.Length(pixelRequest.color(), 4, 4);
