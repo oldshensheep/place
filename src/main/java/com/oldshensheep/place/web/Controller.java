@@ -15,6 +15,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -62,7 +65,14 @@ public class Controller {
     @PostMapping("/init")
     public void putAll(@RequestParam String token, HttpServletResponse response) {
         if (token != null && token.equals(appConfig.token)) {
-            service.initialize();
+            BufferedImage bufferedImage;
+            try {
+                bufferedImage = ImageIO.read(new File(appConfig.initImage));
+            } catch (IOException e) {
+                log.error("Error reading image file", e);
+                throw new IllegalStateException("Error reading image file", e);
+            }
+            service.initialize(bufferedImage);
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }

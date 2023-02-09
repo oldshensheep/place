@@ -79,14 +79,7 @@ public class PlaceService {
         placeRepository.setAll(allPlaces);
     }
 
-    public void initialize() {
-        BufferedImage bufferedImage;
-        try {
-            bufferedImage = ImageIO.read(new File(appConfig.initImage));
-        } catch (IOException e) {
-            log.error("Error reading image file", e);
-            throw new IllegalStateException("Error reading image file", e);
-        }
+    public void initialize(BufferedImage bufferedImage) {
         byte[] imageBytes = Utils.scaleImageTo(bufferedImage, appConfig.width, appConfig.height);
         placeRepository.setAll(imageBytes);
         mqService.producer("init");

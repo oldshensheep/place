@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -30,7 +34,13 @@ class PlaceServiceTest {
 
     @Test
     void initialize() {
-        Assertions.assertDoesNotThrow(() -> placeService.initialize());
+        BufferedImage bufferedImage;
+        try {
+            bufferedImage = ImageIO.read(new File(appConfig.initImage));
+        } catch (IOException e) {
+            throw new IllegalStateException("Error reading image file", e);
+        }
+        Assertions.assertDoesNotThrow(() -> placeService.initialize(bufferedImage));
     }
 
     @Test
