@@ -119,6 +119,7 @@ public class PlaceService {
     }
 
     public void recoveryData(Instant start, Instant end) {
+        // TODO Insert in batches
         var ops = operationRepository.findByCreatedAtBetween(start, end, Pageable.unpaged());
         for (var op : ops) {
             placeRepository.setOne(op.getColorBytes(), op.getOffset());

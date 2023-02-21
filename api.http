@@ -1,17 +1,17 @@
 ### init canvas
-POST http://localhost:8080/init?token=cb2f4c23-5bfb-485c-aa65-e5873f279bab
+POST {{host}}/init?token={{token}}
 
 ### recovery canvas
-POST http://localhost:8080/recovery?token=cb2f4c23-5bfb-485c-aa65-e5873f279bab
+POST  {{host}}/recovery?token={{token}}
 Content-Type:  application/json
 
 {
-  "start": "1667985618",
-  "end": "1676964501"
+  "start": "1667985084",
+  "end": "1676963455"
 }
 
 ### put a pixel
-PUT http://localhost:8080/pixels
+PUT  {{host}}/pixels
 Content-Type:  application/json
 
 {
@@ -21,10 +21,10 @@ Content-Type:  application/json
 }
 
 ### get a pixel
-GET http://localhost:8080/pixels?x=10&y=10
+GET  {{host}}/pixels?x=10&y=10
 
 ### get all pixels
-GET http://localhost:8080/pixels/all
+GET  {{host}}/pixels/all
 
 ### sse pixel
-GET http://localhost:8080/time
+GET  {{host}}/time
