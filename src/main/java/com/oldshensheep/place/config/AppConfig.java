@@ -27,6 +27,8 @@ public class AppConfig {
 
     public Long rateLimit = 7L;
 
+    public String backupFileName = "image_bitmap_backup.bin";
+
     public void setToken(String token) {
         if (token == null || token.length() <= 6) {
             this.token = UUID.randomUUID().toString();
