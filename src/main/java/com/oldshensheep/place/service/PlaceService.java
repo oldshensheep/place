@@ -13,6 +13,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -114,6 +116,13 @@ public class PlaceService {
     public byte[] getPixel(int x, int y) {
         int offset = (x + y * appConfig.width) * MinOPSize;
         return placeRepository.getOne(offset, MinOPSize);
+    }
+
+    public void recoveryData(Instant start, Instant end) {
+        var ops = operationRepository.findByCreatedAtBetween(start, end, Pageable.unpaged());
+        for (var op : ops) {
+            placeRepository.setOne(op.getColorBytes(), op.getOffset());
+        }
     }
 
     @PreDestroy

@@ -5,6 +5,7 @@ import com.oldshensheep.place.service.MQService;
 import com.oldshensheep.place.service.PlaceService;
 import com.oldshensheep.place.utils.Utils;
 import com.oldshensheep.place.web.request.PutPixelRequest;
+import com.oldshensheep.place.web.request.RecoveryRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +74,19 @@ public class Controller {
                 throw new IllegalStateException("Error reading image file", e);
             }
             service.initialize(bufferedImage);
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping("/recovery")
+    public void recoveryData(
+            @RequestParam String token,
+            @RequestBody RecoveryRequest recoveryRequest,
+            HttpServletResponse response
+    ) {
+        if (token != null && token.equals(appConfig.token)) {
+            service.recoveryData(recoveryRequest.start(), recoveryRequest.end());
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }

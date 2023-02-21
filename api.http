@@ -1,6 +1,15 @@
 ### init canvas
 POST http://localhost:8080/init?token=cb2f4c23-5bfb-485c-aa65-e5873f279bab
 
+### recovery canvas
+POST http://localhost:8080/recovery?token=cb2f4c23-5bfb-485c-aa65-e5873f279bab
+Content-Type:  application/json
+
+{
+  "start": "1667985618",
+  "end": "1676964501"
+}
+
 ### put a pixel
 PUT http://localhost:8080/pixels
 Content-Type:  application/json

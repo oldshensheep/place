@@ -30,7 +30,7 @@ public class Utils {
             remoteAddr = request.getHeader("X-FORWARDED-FOR");
         }
         if (remoteAddr == null) {
-            remoteAddr = request.getHeader("X-FORWARDED-FOR");
+            remoteAddr = request.getRemoteAddr();
         }
         return remoteAddr;
     }

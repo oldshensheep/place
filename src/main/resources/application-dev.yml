@@ -22,4 +22,5 @@ app:
   token: "cb2f4c23-5bfb-485c-aa65-e5873f279bab" # if is null or length <= 6, then random uuid used
   use-redis: true
   rate-limit: 7
-debug: false
+
+debug: true
