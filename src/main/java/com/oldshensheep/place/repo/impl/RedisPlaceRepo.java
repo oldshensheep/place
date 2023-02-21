@@ -2,9 +2,10 @@ package com.oldshensheep.place.repo.impl;
 
 import com.oldshensheep.place.repo.PlaceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 
 @RequiredArgsConstructor
 public class RedisPlaceRepo implements PlaceRepository {
@@ -18,13 +19,9 @@ public class RedisPlaceRepo implements PlaceRepository {
     }
 
     public byte[] getOne(int offset, int length) {
-        String longs = redisTemplate.opsForValue().get(PLACE_REDIS_KEY, offset, offset + length);
-        if (longs != null) {
-            byte[] bytes = longs.getBytes();
-            return Arrays.copyOfRange(bytes, 0, length);
-        } else {
-            throw new IllegalStateException("no value at %s".formatted(offset));
-        }
+        return redisTemplate.execute((RedisCallback<byte[]>) connection -> connection.
+                stringCommands()
+                .getRange(PLACE_REDIS_KEY.getBytes(StandardCharsets.UTF_8), offset, offset + length - 1));
     }
 
     public byte[] getAll() {

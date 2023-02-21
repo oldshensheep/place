@@ -1,7 +1,7 @@
 plugins {
-    id 'org.springframework.boot' version '3.0.1'
+    id 'org.springframework.boot' version '3.0.2'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.graalvm.buildtools.native' version '0.9.18'
+    id 'org.graalvm.buildtools.native' version '0.9.20'
     id 'java'
 }
 
@@ -41,15 +41,15 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += "--enable-preview"
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     jvmArgs += "--enable-preview"
 }
 
-tasks.withType(JavaExec) {
+tasks.withType(JavaExec).configureEach {
     jvmArgs += '--enable-preview'
 }
 

@@ -1,10 +1,10 @@
 package com.oldshensheep.place.utils;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 public class Utils {
 
