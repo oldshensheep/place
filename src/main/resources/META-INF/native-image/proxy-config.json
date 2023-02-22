@@ -9,9 +9,6 @@
     "interfaces":["io.lettuce.core.api.sync.RedisCommands","io.lettuce.core.cluster.api.sync.RedisClusterCommands"]
   },
   {
-    "interfaces":["io.lettuce.core.pubsub.api.sync.RedisPubSubCommands"]
-  },
-  {
     "interfaces":["java.lang.reflect.ParameterizedType","org.springframework.core.SerializableTypeWrapper$SerializableTypeProxy","java.io.Serializable"]
   },
   {
@@ -67,6 +64,9 @@
   },
   {
     "interfaces":["org.hibernate.SessionFactory","org.springframework.orm.jpa.EntityManagerFactoryInfo"]
+  },
+  {
+    "interfaces":["org.hibernate.query.hql.spi.SqmQueryImplementor","org.hibernate.query.sqm.internal.SqmInterpretationsKey$InterpretationsKeySource","org.hibernate.query.spi.DomainQueryExecutionContext","org.hibernate.query.SelectionQuery","org.hibernate.query.CommonQueryContract"]
   },
   {
     "interfaces":["org.springframework.boot.context.properties.ConfigurationProperties"]

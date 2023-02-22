@@ -2,9 +2,6 @@
   "resources":{
   "includes":[
     {
-      "pattern":"public/.*$"
-    },
-    {
       "pattern":"\\QMETA-INF/maven/org.xerial/sqlite-jdbc/pom.properties\\E"
     }, 
     {
@@ -44,16 +41,10 @@
       "pattern":"\\Qcom/oldshensheep/place/config/AvailableService.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/oldshensheep/place/config/Config$$SpringCGLIB$$0.class\\E"
-    }, 
-    {
       "pattern":"\\Qcom/oldshensheep/place/config/Config.class\\E"
     }, 
     {
       "pattern":"\\Qcom/oldshensheep/place/config/RedisMQConfig.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/oldshensheep/place/config/WebConfig$$SpringCGLIB$$0.class\\E"
     }, 
     {
       "pattern":"\\Qcom/oldshensheep/place/config/WebConfig.class\\E"
@@ -87,6 +78,9 @@
     }, 
     {
       "pattern":"\\Qcom/oldshensheep/place/service/RateLimiterService.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/oldshensheep/place/service/ScheduleService.class\\E"
     }, 
     {
       "pattern":"\\Qcom/oldshensheep/place/web/Controller.class\\E"
@@ -761,7 +755,10 @@
       "pattern":"\\Qorg/springframework/web/servlet/config/annotation/WebMvcConfigurer.class\\E"
     }, 
     {
-      "pattern":"\\Qorg/sqlite/native/Linux/aarch64/libsqlitejdbc.so\\E"
+      "pattern":"\\Qorg/sqlite/native/Windows/x86_64/sqlitejdbc.dll\\E"
+    }, 
+    {
+      "pattern":"\\Qpublic/index.html\\E"
     }, 
     {
       "pattern":"\\Qsqlite-jdbc.properties\\E"
@@ -886,10 +883,6 @@
     }, 
     {
       "name":"org.apache.tomcat.util.scan.LocalStrings",
-      "locales":[""]
-    }, 
-    {
-      "name":"org.apache.tomcat.util.threads.LocalStrings",
       "locales":[""]
     }, 
     {

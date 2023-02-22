@@ -74,6 +74,7 @@ public class Controller {
                 throw new IllegalStateException("Error reading image file", e);
             }
             service.initialize(bufferedImage);
+            log.info("Initializing canvas with %s".formatted(appConfig.initImage));
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
