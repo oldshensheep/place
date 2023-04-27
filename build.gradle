@@ -1,12 +1,12 @@
 plugins {
-    id 'org.springframework.boot' version '3.0.2'
-    id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.graalvm.buildtools.native' version '0.9.20'
     id 'java'
+    id 'org.springframework.boot' version '3.0.6'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.graalvm.buildtools.native' version '0.9.21'
 }
 
 group = 'com.oldshensheep'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2-SNAPSHOT'
 sourceCompatibility = '19'
 
 configurations {
@@ -62,7 +62,6 @@ graalvmNative {
             buildArgs.add('--enable-preview')
             buildArgs.add('--verbose')
             buildArgs.add('--native-image-info')
-            buildArgs.add('--enable-monitoring=jfr')
         }
     }
 }
