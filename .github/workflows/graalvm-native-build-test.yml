@@ -1,4 +1,4 @@
-name: Graalvm native build test
+name: Graalvm native build
 on: [pull_request, workflow_dispatch]
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: graalvm/setup-graalvm@v1
         with:
-          version: "22.3.1"
+          version: "22.3"
           java-version: "19"
           components: "native-image"
           github-token: ${{ secrets.GITHUB_TOKEN }}
